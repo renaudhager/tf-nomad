@@ -1,0 +1,4 @@
+terraform.*
+.terraform/*
+!terraform.*.example
+set-remote-state.bash
