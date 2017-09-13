@@ -176,6 +176,38 @@ resource "aws_security_group" "nomad_slave" {
   }
 }
 
+resource "aws_security_group" "nomad_elb" {
+  name        = "${var.owner}_nomad_elb"
+  description = "Allow all inbound traffic to nomad ELB"
+  vpc_id      = "${data.terraform_remote_state.vpc_rs.vpc}"
+
+  # Allow HTTP traffic
+  ingress {
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
+    cidr_blocks    = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 9998
+    to_port   = 9998
+    protocol  = "tcp"
+    cidr_blocks    = ["0.0.0.0/0"]
+  }
+  # Allow to outgoing connection.
+  egress {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags {
+    Name  = "${var.owner}_nomad_elb"
+    owner = "${var.owner}"
+  }
+}
+
 #
 # Outputs
 #
